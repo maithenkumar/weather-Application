@@ -1,8 +1,9 @@
-import 'dart:ui';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:weather_app/constants.dart';
 
+import 'api_services.dart';
+import 'days_tem.dart';
 import 'tem_container.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,6 +14,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  var api;
+  @override
+  void initState() {
+    api.fetchnews();
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +58,7 @@ class _HomePageState extends State<HomePage> {
               ),
               child: Column(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Padding(
@@ -63,7 +72,7 @@ class _HomePageState extends State<HomePage> {
                               color: Colors.white,
                               size: 30,
                             )),
-                        SizedBox(
+                        const SizedBox(
                           width: 30,
                         ),
 
@@ -83,7 +92,9 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Spacer(),
                         IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              print("iam Amini");
+                            },
                             icon: const Icon(
                               Icons.more_vert_rounded,
                               color: Colors.white,
@@ -189,19 +200,28 @@ class _HomePageState extends State<HomePage> {
           Row(
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 40),
+                padding: EdgeInsets.only(left: 40),
                 child: Text(
-                  "Today",
+                  "",
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 30),
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               TextButton(
-                onPressed: () {},
-                child: Text(
+                onPressed: () {
+                  if (kDebugMode) {
+                    print("maitheen");
+                  }
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Days_temp(),
+                      ));
+                },
+                child: const Text(
                   '7 days',
                   style: TextStyle(),
                 ),

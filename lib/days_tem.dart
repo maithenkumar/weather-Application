@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-
 import 'constants.dart';
 import 'day_list.dart';
 
@@ -49,7 +46,7 @@ class _Days_tempState extends State<Days_temp> {
               ),
               child: Column(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Padding(
@@ -63,7 +60,7 @@ class _Days_tempState extends State<Days_temp> {
                               color: Colors.white,
                               size: 40,
                             )),
-                        SizedBox(
+                        const SizedBox(
                           width: 60,
                         ),
                         const Icon(
@@ -77,7 +74,7 @@ class _Days_tempState extends State<Days_temp> {
                             fontSize: 23,
                           ),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         IconButton(
                             onPressed: () {},
                             icon: const Icon(
