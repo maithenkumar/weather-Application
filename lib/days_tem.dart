@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'api_services.dart';
 import 'constants.dart';
 import 'day_list.dart';
+import 'home_page.dart';
 
 class Days_temp extends StatefulWidget {
   const Days_temp({super.key});
@@ -10,6 +12,23 @@ class Days_temp extends StatefulWidget {
 }
 
 class _Days_tempState extends State<Days_temp> {
+  List<dynamic> _data = [];
+  int val = 0;
+  var wetherData;
+
+  var api;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchnews().then((data) {
+      setState(() {
+        _data = data;
+        print(_data);
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,13 +72,24 @@ class _Days_tempState extends State<Days_temp> {
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: [
-                        IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.arrow_circle_left_outlined,
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomePage(
+                                    val: val,
+                                  ),
+                                ));
+                          },
+                          child: const Text(
+                            "MORE",
+                            style: TextStyle(
                               color: Colors.white,
-                              size: 40,
-                            )),
+                              fontSize: 23,
+                            ),
+                          ),
+                        ),
                         const SizedBox(
                           width: 60,
                         ),
@@ -68,7 +98,7 @@ class _Days_tempState extends State<Days_temp> {
                           color: Colors.white,
                         ),
                         const Text(
-                          "7 days",
+                          "16 days",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 23,
@@ -88,7 +118,7 @@ class _Days_tempState extends State<Days_temp> {
                   Padding(
                     padding: const EdgeInsets.only(left: 45.0),
                     child: Text(
-                      "Tommrow",
+                      "${_data[val]["datetime"]}",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 25,
@@ -102,8 +132,8 @@ class _Days_tempState extends State<Days_temp> {
                       Padding(
                         padding: const EdgeInsets.only(left: 20, bottom: 10),
                         child: Text(
-                          "21",
-                          style: TextStyle(
+                          "${_data[val]["temp"]}",
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 75,
                             color: Colors.white,
@@ -111,7 +141,7 @@ class _Days_tempState extends State<Days_temp> {
                         ),
                       ),
                       Text(
-                        "/17^",
+                        "%",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.white60,
@@ -122,14 +152,14 @@ class _Days_tempState extends State<Days_temp> {
                   Padding(
                     padding: const EdgeInsets.only(left: 40.0, bottom: 10),
                     child: Text(
-                      "Rainy-Cloudy",
+                      "${(_data[val]["weather"]["description"])}",
                       style: TextStyle(color: Colors.white60),
                     ),
                   ),
                   Row(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 40),
+                        padding: const EdgeInsets.only(left: 30),
                         child: Column(
                           children: [
                             Padding(
@@ -140,18 +170,18 @@ class _Days_tempState extends State<Days_temp> {
                               ),
                             ),
                             Text(
-                              "13 km/h",
-                              style: TextStyle(color: Colors.white),
+                              "${_data[val]["wind_gust_spd"]}km/h",
+                              style: const TextStyle(color: Colors.white),
                             ),
-                            Text(
-                              "Wind",
+                            const Text(
+                              "Wind Speed",
                               style: TextStyle(color: Colors.white60),
                             )
                           ],
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 40),
+                        padding: const EdgeInsets.only(left: 30),
                         child: Column(
                           children: [
                             Padding(
@@ -162,18 +192,18 @@ class _Days_tempState extends State<Days_temp> {
                               ),
                             ),
                             Text(
-                              "13 km/h",
+                              "${_data[val]["high_temp"]}",
                               style: TextStyle(color: Colors.white),
                             ),
                             Text(
-                              "Wind",
+                              "High Temp",
                               style: TextStyle(color: Colors.white60),
                             )
                           ],
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 40),
+                        padding: const EdgeInsets.only(left: 30),
                         child: Column(
                           children: [
                             Padding(
@@ -184,11 +214,11 @@ class _Days_tempState extends State<Days_temp> {
                               ),
                             ),
                             Text(
-                              "13 km/h",
-                              style: TextStyle(color: Colors.white),
+                              "${_data[val]["low_temp"]}",
+                              style: const TextStyle(color: Colors.white),
                             ),
                             Text(
-                              "Wind",
+                              "Lower Temp",
                               style: TextStyle(color: Colors.white60),
                             )
                           ],
@@ -200,8 +230,23 @@ class _Days_tempState extends State<Days_temp> {
               ),
             ),
           ),
-          list_days(),
-          list_days(),
+          // list_days(day: "${_data[0]}", weather: weather, temp: temp)
+          Expanded(
+            child: ListView.builder(
+                itemCount: _data.length,
+                itemBuilder: (context, index) {
+                  return list_days(
+                    day: "${_data[index]["datetime"]}",
+                    weather: "${(_data[index]["weather"]["description"])}",
+                    temp: "${_data[index]["temp"]}",
+                    callback: () {
+                      setState(() {
+                        val = index;
+                      });
+                    },
+                  );
+                }),
+          )
         ],
       ),
     );

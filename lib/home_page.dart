@@ -1,38 +1,85 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:weather_app/constants.dart';
 
 import 'api_services.dart';
 import 'days_tem.dart';
+import 'details.dart';
 import 'tem_container.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final int val;
+  const HomePage({super.key, required this.val});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  var api;
+  List<dynamic> _data = [];
+  String title = '';
+  List<String> _widgetList = [
+    "app_max_temp",
+    "app_min_temp",
+    "clouds",
+    "clouds_hi",
+    "clouds_low",
+    "clouds_mid",
+    "datetime",
+    "dewpt",
+    "high_temp",
+    "low_temp",
+    "max_dhi",
+    "max_temp",
+    "min_temp",
+    "moon_phase",
+    "moon_phase_lunation",
+    "moonrise_ts",
+    "moonset_ts",
+    "ozone",
+    "pop",
+    "precip",
+    "pres",
+    "rh",
+    "slp",
+    "snow",
+    "snow_depth",
+    "sunrise_ts",
+    "sunset_ts",
+    "temp",
+    "ts",
+    "uv",
+    "valid_date",
+    "vis",
+    "wind_cdir",
+    "wind_cdir_full",
+    "wind_dir",
+    "wind_gust_spd",
+    "wind_spd"
+  ];
+
   @override
   void initState() {
-    api.fetchnews();
-    // TODO: implement initState
     super.initState();
+    ApiServices().titlefetchnews();
+    fetchnews().then((data) {
+      setState(() {
+        _data = data;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Constants.blue,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        backgroundColor: Constants.blue,
+        body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              height: 600,
+              height: 750,
               width: double.infinity,
               decoration: const BoxDecoration(
                 boxShadow: [
@@ -56,201 +103,266 @@ class _HomePageState extends State<HomePage> {
                   bottomRight: Radius.circular(50),
                 ),
               ),
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.menu_sharp,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            const SizedBox(
+                              width: 70,
+                            ),
+                            const Icon(
+                              Icons.location_on_outlined,
                               color: Colors.white,
-                              size: 30,
-                            )),
-                        const SizedBox(
-                          width: 30,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                ApiServices.stateName,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 23,
+                                ),
+                              ),
+                            ),
+                            Spacer(),
+                          ],
                         ),
-
-                        const Icon(
-                          Icons.location_on_outlined,
+                      ),
+                      Image.asset("assets/1.png", height: 230),
+                      // Icon(_data[0]["weather"]["icon"]),
+                      Text(
+                        "${_data[widget.val]["temp"]}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 100,
                           color: Colors.white,
                         ),
-                        // const SizedBox(
-                        //   width: 20,
-                        // ),
-                        const Text(
-                          "WeatherApp",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 23,
-                          ),
-                        ),
-                        Spacer(),
-                        IconButton(
-                            onPressed: () {
-                              print("iam Amini");
-                            },
-                            icon: const Icon(
-                              Icons.more_vert_rounded,
-                              color: Colors.white,
-                              size: 30,
-                            ))
-                      ],
-                    ),
-                  ),
-                  Image.asset("assets/1.png", height: 230),
-                  Text(
-                    "21",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 125,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Text(
-                    "Thunderstorm",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 25,
-                    ),
-                  ),
-                  Text(
-                    "Monday,17 May",
-                    style: TextStyle(color: Colors.white60),
-                  ),
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 40),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Icon(
-                                Icons.swipe,
-                                color: Colors.white70,
-                              ),
-                            ),
-                            Text(
-                              "13 km/h",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            Text(
-                              "Wind",
-                              style: TextStyle(color: Colors.white60),
-                            )
-                          ],
+                      ),
+                      Text(
+                        ApiServices.cityName,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 25,
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 40),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Icon(
-                                Icons.swipe,
-                                color: Colors.white70,
-                              ),
-                            ),
-                            Text(
-                              "13 km/h",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            Text(
-                              "Wind",
-                              style: TextStyle(color: Colors.white60),
-                            )
-                          ],
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text(
+                          "${_data[widget.val]["valid_date"]}",
+                          style: TextStyle(color: Colors.white60),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 40),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Icon(
-                                Icons.swipe,
-                                color: Colors.white70,
-                              ),
-                            ),
-                            Text(
-                              "13 km/h",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            Text(
-                              "Wind",
-                              style: TextStyle(color: Colors.white60),
-                            )
-                          ],
-                        ),
-                      )
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[0],
+                        val: _widgetList[0],
+                      ),
+
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[0],
+                        val: _widgetList[0],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[1],
+                        val: _widgetList[1],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[2],
+                        val: _widgetList[2],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[3],
+                        val: _widgetList[3],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[4],
+                        val: _widgetList[4],
+                      ),
+
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[5],
+                        val: _widgetList[5],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[6],
+                        val: _widgetList[6],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[7],
+                        val: _widgetList[7],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[8],
+                        val: _widgetList[8],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[9],
+                        val: _widgetList[9],
+                      ),
+
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[10],
+                        val: _widgetList[10],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[11],
+                        val: _widgetList[11],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[12],
+                        val: _widgetList[12],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[13],
+                        val: _widgetList[13],
+                      ),
+
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[14],
+                        val: _widgetList[14],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[15],
+                        val: _widgetList[15],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[16],
+                        val: _widgetList[16],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[17],
+                        val: _widgetList[17],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[18],
+                        val: _widgetList[18],
+                      ),
+
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[19],
+                        val: _widgetList[19],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[20],
+                        val: _widgetList[20],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[21],
+                        val: _widgetList[21],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[22],
+                        val: _widgetList[22],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[23],
+                        val: _widgetList[23],
+                      ),
+
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[24],
+                        val: _widgetList[24],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[25],
+                        val: _widgetList[25],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[26],
+                        val: _widgetList[26],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[27],
+                        val: _widgetList[27],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[28],
+                        val: _widgetList[28],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[29],
+                        val: _widgetList[29],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[30],
+                        val: _widgetList[30],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[31],
+                        val: _widgetList[31],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[32],
+                        val: _widgetList[32],
+                      ),
+
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[33],
+                        val: _widgetList[33],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[34],
+                        val: _widgetList[34],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[35],
+                        val: _widgetList[35],
+                      ),
+                      MoreDetails(
+                        ind: widget.val,
+                        keyd: _widgetList[36],
+                        val: _widgetList[36],
+                      ),
                     ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-          Row(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 40),
-                child: Text(
-                  "",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30),
-                ),
-              ),
-              const Spacer(),
-              TextButton(
-                onPressed: () {
-                  if (kDebugMode) {
-                    print("maitheen");
-                  }
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Days_temp(),
-                      ));
-                },
-                child: const Text(
-                  '7 days',
-                  style: TextStyle(),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 40),
-                child: Icon(
-                  Icons.arrow_forward_ios_sharp,
-                  color: Colors.white60,
-                  size: 15,
-                ),
-              )
-            ],
-          ),
-          Tem_container(),
-          // ListView.builder(
-          //   scrollDirection: Axis.horizontal,
-          //   itemCount: 4,
-          //   itemBuilder: (BuildContext context, int index) {
-          //     return Tem_container();
-          //   },
-          // )
-
-          // ListView.builder(
-          //   itemCount: 3,
-          //   itemBuilder: (context, index) => Tem_container(),
-          // )
-        ],
-      ),
-    );
+          )
+        ]));
   }
 }
